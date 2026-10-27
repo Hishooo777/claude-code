@@ -42,7 +42,7 @@ retake.
 | ffmpeg-skill | `silence.py` dead-air cut | 17.53 s to 13.28 s, both pauses found |
 | ffmpeg-skill | `caption.py` burned SRT captions, then `look.py` | captions on screen at the right times |
 | ffmpeg-skill | `fit.py` 9:16 blur pad, `render.py --template reels`, `check.py` | passes after `loudness.py --tp -2` (the robot voice peaks hard) |
-| ffmpeg-skill | upstream `npm test` | see the end of this file |
+| ffmpeg-skill | upstream `npm test` | all 1,159 tests that ran passed; 6 skipped (see the end of this file) |
 | hyperframes | `doctor`, `browser ensure` | ready to render |
 | hyperframes (captions) | transcript import, word-by-word animated captions, `check`, draft render | check passed; 13.2 s 1080p MP4 |
 | herk-edit-kit | `npm ci`, `npm run setup`, `npm test` | 11/11 pass |
@@ -102,4 +102,19 @@ cannot be installed here.
 
 ## ffmpeg-skill upstream test suite
 
-Pending.
+`npm test` from the ffmpeg-skill 2.17.2 checkout, run against the system
+FFmpeg 6.1.1. Every test that ran passed.
+
+| Suite | Ran | Passed | Skipped |
+| --- | --- | --- | --- |
+| `tests/test_all.py` | 936 | 932 | 4 |
+| `tests/test_contract.py` | 229 | 227 | 2 |
+
+- One `test_all.py` test was interrupted by a time limit on my side, not by a
+  fault in ffmpeg-skill. Run on its own, it passes:
+  `test_picture.PictureTests.test_karaoke_style_default_sweep_is_byte_identical_to_omitting_the_flag`.
+- Four skipped tests need Apple Silicon VideoToolbox encoders.
+- One skipped test needs the 1.4 GB real-device media corpus
+  (`tests/corpus.py --fetch`).
+- One skipped test checks a `drawtext` line-break quirk in FFmpeg
+  8.0–8.1.0, which this FFmpeg does not have.
